@@ -13,48 +13,54 @@ from bot_commander.types import BotResponse
 from .constants import PLUGIN_DATA_TTS_SERVICE
 from .tts_service import TTSService
 
-_ENABLE_COMMANDS = frozenset({
-    "audio mode on",
-    "audio on",
-    "enable audio",
-    "enable audio mode",
-    "audio modus an",
-    "audiomodus an",
-    "sprachmodus an",
-    "antworte mit audio",
-})
+_ENABLE_COMMANDS = frozenset(
+    {
+        "audio mode on",
+        "audio on",
+        "enable audio",
+        "enable audio mode",
+        "audio modus an",
+        "audiomodus an",
+        "sprachmodus an",
+        "antworte mit audio",
+    }
+)
 
-_DISABLE_COMMANDS = frozenset({
-    "audio mode off",
-    "audio off",
-    "disable audio",
-    "disable audio mode",
-    "audio modus aus",
-    "audiomodus aus",
-    "sprachmodus aus",
-})
+_DISABLE_COMMANDS = frozenset(
+    {
+        "audio mode off",
+        "audio off",
+        "disable audio",
+        "disable audio mode",
+        "audio modus aus",
+        "audiomodus aus",
+        "sprachmodus aus",
+    }
+)
 
-_TOGGLE_TEXT_COMMANDS = frozenset({
-    "toggle text with audio",
-    "text with audio",
-    "text und audio",
-    "text mit audio",
-})
+_TOGGLE_TEXT_COMMANDS = frozenset(
+    {
+        "toggle text with audio",
+        "text with audio",
+        "text und audio",
+        "text mit audio",
+    }
+)
 
-_SKIP_ONCE_COMMANDS = frozenset({
-    "show me that as text",
-    "show as text",
-    "text version",
-    "as text",
-    "zeig mir das als text",
-    "als text zeigen",
-    "text anzeigen",
-})
+_SKIP_ONCE_COMMANDS = frozenset(
+    {
+        "show me that as text",
+        "show as text",
+        "text version",
+        "as text",
+        "zeig mir das als text",
+        "als text zeigen",
+        "text anzeigen",
+    }
+)
 
 
-def tts_command_handler(
-    text: str, user_id: str, plugin_data: dict[str, Any]
-) -> BotResponse | None:
+def tts_command_handler(text: str, user_id: str, plugin_data: dict[str, Any]) -> BotResponse | None:
     """Handle TTS commands. Returns BotResponse to short-circuit, None to continue."""
     service: TTSService | None = plugin_data.get(PLUGIN_DATA_TTS_SERVICE)
     if service is None:

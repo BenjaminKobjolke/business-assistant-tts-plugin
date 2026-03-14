@@ -28,6 +28,7 @@ def service(mock_provider: MagicMock, tmp_path: str) -> TTSService:
         provider="kitten",
         model="test",
         voice="Jasper",
+        language="English",
         output_dir=str(tmp_path),
         speed=1.0,
     )
@@ -46,18 +47,14 @@ class TestResponseProcessor:
         assert result.text == "Hello"
         assert result.audio_path == ""
 
-    def test_converts_to_audio_when_enabled(
-        self, plugin_data: dict, service: TTSService
-    ) -> None:
+    def test_converts_to_audio_when_enabled(self, plugin_data: dict, service: TTSService) -> None:
         service.enable_audio_mode("user1")
         response = BotResponse(text="Hello world")
         result = tts_response_processor(response, "user1", plugin_data)
         assert result.text == ""
         assert result.audio_path.endswith(".ogg")
 
-    def test_keeps_text_when_text_with_audio(
-        self, plugin_data: dict, service: TTSService
-    ) -> None:
+    def test_keeps_text_when_text_with_audio(self, plugin_data: dict, service: TTSService) -> None:
         service.enable_audio_mode("user1")
         service.toggle_text_with_audio("user1")
         response = BotResponse(text="Hello world")
@@ -65,9 +62,7 @@ class TestResponseProcessor:
         assert result.text == "Hello world"
         assert result.audio_path.endswith(".ogg")
 
-    def test_skip_once_returns_text(
-        self, plugin_data: dict, service: TTSService
-    ) -> None:
+    def test_skip_once_returns_text(self, plugin_data: dict, service: TTSService) -> None:
         service.enable_audio_mode("user1")
         service.skip_once("user1")
         response = BotResponse(text="Detailed text")
@@ -75,9 +70,7 @@ class TestResponseProcessor:
         assert result.text == "Detailed text"
         assert result.audio_path == ""
 
-    def test_skip_once_consumed(
-        self, plugin_data: dict, service: TTSService
-    ) -> None:
+    def test_skip_once_consumed(self, plugin_data: dict, service: TTSService) -> None:
         service.enable_audio_mode("user1")
         service.skip_once("user1")
         response = BotResponse(text="First")
@@ -87,9 +80,7 @@ class TestResponseProcessor:
         result = tts_response_processor(response2, "user1", plugin_data)
         assert result.audio_path.endswith(".ogg")
 
-    def test_empty_text_passthrough(
-        self, plugin_data: dict, service: TTSService
-    ) -> None:
+    def test_empty_text_passthrough(self, plugin_data: dict, service: TTSService) -> None:
         service.enable_audio_mode("user1")
         response = BotResponse(text="")
         result = tts_response_processor(response, "user1", plugin_data)

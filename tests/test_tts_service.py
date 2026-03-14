@@ -28,6 +28,7 @@ def settings() -> TTSSettings:
         voice="Jasper",
         output_dir="",
         speed=1.0,
+        language="English",
     )
 
 
@@ -47,6 +48,7 @@ def service(mock_provider: MagicMock, settings: TTSSettings, tmp_path: str) -> T
         voice=settings.voice,
         output_dir=str(tmp_path),
         speed=settings.speed,
+        language=settings.language,
     )
     return TTSService(mock_provider, s)
 
@@ -100,16 +102,12 @@ class TestSkipOnce:
 
 
 class TestGenerateAudio:
-    def test_generates_wav_file(
-        self, service: TTSService, mock_provider: MagicMock
-    ) -> None:
+    def test_generates_wav_file(self, service: TTSService, mock_provider: MagicMock) -> None:
         path = service.generate_audio_file("Hello world")
         assert path.endswith(".ogg")
         mock_provider.generate.assert_called_once_with("Hello world", "Jasper", 1.0)
 
-    def test_generation_failure_raises(
-        self, service: TTSService, mock_provider: MagicMock
-    ) -> None:
+    def test_generation_failure_raises(self, service: TTSService, mock_provider: MagicMock) -> None:
         mock_provider.generate.side_effect = RuntimeError("model error")
         with pytest.raises(RuntimeError, match="model error"):
             service.generate_audio_file("fail")
