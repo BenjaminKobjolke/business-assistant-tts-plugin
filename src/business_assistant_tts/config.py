@@ -6,11 +6,13 @@ import os
 from dataclasses import dataclass
 
 from .constants import (
+    DEFAULT_TTS_LANGUAGE,
     DEFAULT_TTS_MODEL,
     DEFAULT_TTS_OUTPUT_DIR,
     DEFAULT_TTS_PROVIDER,
     DEFAULT_TTS_SPEED,
     DEFAULT_TTS_VOICE,
+    ENV_TTS_LANGUAGE,
     ENV_TTS_MODEL,
     ENV_TTS_OUTPUT_DIR,
     ENV_TTS_PROVIDER,
@@ -28,6 +30,7 @@ class TTSSettings:
     voice: str
     output_dir: str
     speed: float
+    language: str
 
 
 def load_tts_settings() -> TTSSettings | None:
@@ -46,4 +49,5 @@ def load_tts_settings() -> TTSSettings | None:
         voice=os.getenv(ENV_TTS_VOICE, DEFAULT_TTS_VOICE),
         output_dir=os.getenv(ENV_TTS_OUTPUT_DIR, DEFAULT_TTS_OUTPUT_DIR),
         speed=float(os.getenv(ENV_TTS_SPEED, str(DEFAULT_TTS_SPEED))),
+        language=os.getenv(ENV_TTS_LANGUAGE, DEFAULT_TTS_LANGUAGE),
     )

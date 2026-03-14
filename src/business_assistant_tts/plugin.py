@@ -18,6 +18,7 @@ from .constants import (
     SYSTEM_PROMPT_TTS,
 )
 from .message_modifier import tts_message_modifier
+from .providers.base import TTSProvider
 from .providers.kitten import KittenTTSProvider
 from .response_processor import tts_response_processor
 from .tts_service import TTSService
@@ -25,10 +26,14 @@ from .tts_service import TTSService
 logger = logging.getLogger(__name__)
 
 
-def _create_provider(settings: TTSSettings) -> KittenTTSProvider:
+def _create_provider(settings: TTSSettings) -> TTSProvider:
     """Create the TTS provider based on settings."""
     if settings.provider == "kitten":
         return KittenTTSProvider(settings.model)
+    if settings.provider == "qwen3":
+        from .providers.qwen3 import Qwen3TTSProvider
+
+        return Qwen3TTSProvider(settings.model, settings.language)
     msg = f"Unknown TTS provider: {settings.provider}"
     raise ValueError(msg)
 

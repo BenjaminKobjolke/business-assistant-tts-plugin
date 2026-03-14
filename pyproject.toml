@@ -7,7 +7,11 @@ dependencies = [
     "business-assistant-v2",
     "soundfile",
     "kittentts",
+    "wtpsplit",
 ]
+
+[project.optional-dependencies]
+qwen3 = ["qwen-tts"]
 
 [build-system]
 requires = ["hatchling"]
