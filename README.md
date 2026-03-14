@@ -13,7 +13,8 @@ Text-to-speech plugin for [Business Assistant v2](https://github.com/BenjaminKob
 
 ## Supported Providers
 
-- **KittenTTS** (local, no GPU required)
+- **KittenTTS** (local, English only, no GPU required)
+- **Qwen3-TTS** (local, multilingual, requires CUDA GPU)
 
 ## Installation
 
@@ -47,18 +48,50 @@ TTS_VOICE=Jasper
 
 5. Restart the bot (full restart, not restart.flag)
 
+### Qwen3-TTS Setup (optional)
+
+1. Add `qwen-tts` and `huggingface-hub` pin to `business-assistant-v2/pyproject.toml` dependencies:
+
+```toml
+"qwen-tts",
+"huggingface-hub>=0.34,<1.0",
+```
+
+2. Run `uv sync` in business-assistant-v2
+
+3. Update `.env` to use Qwen3:
+
+```env
+TTS_PROVIDER=qwen3
+TTS_MODEL=Qwen/Qwen3-TTS-12Hz-1.7B-CustomVoice
+TTS_VOICE=Vivian
+TTS_LANGUAGE=English
+```
+
+4. Restart the bot
+
 ## Configuration
 
 | Variable | Required | Default | Description |
 |---|---|---|---|
-| `TTS_PROVIDER` | No | `kitten` | TTS provider name. Set empty to disable. |
+| `TTS_PROVIDER` | No | `kitten` | TTS provider name (`kitten` or `qwen3`). Set empty to disable. |
 | `TTS_MODEL` | No | `KittenML/kitten-tts-mini-0.8` | Model name/path |
 | `TTS_VOICE` | No | `Jasper` | Voice name |
 | `TTS_OUTPUT_DIR` | No | `data/tts_output` | Temp directory for generated audio |
+| `TTS_SPEED` | No | `1.0` | Speech speed multiplier (0.5–2.0) |
+| `TTS_LANGUAGE` | No | `English` | Language for TTS synthesis (Qwen3 only) |
 
 ### Available KittenTTS Voices
 
 Bella, Jasper, Luna, Bruno, Rosie, Hugo, Kiki, Leo
+
+### Available Qwen3-TTS Voices
+
+Vivian, Serena, Uncle_Fu, Dylan, Eric, Ryan, Aiden, Ono_Anna, Sohee
+
+### Supported Qwen3-TTS Languages
+
+Chinese, English, Japanese, Korean, German, French, Russian, Portuguese, Spanish, Italian
 
 ## Usage
 
@@ -71,3 +104,4 @@ Bella, Jasper, Luna, Bruno, Rosie, Hugo, Kiki, Leo
 
 - `soundfile` — WAV file writing
 - `kittentts` — KittenTTS engine (installed separately via wheel)
+- `qwen-tts` — Qwen3-TTS engine (optional, install via `tools/install_qwen3.bat`)
