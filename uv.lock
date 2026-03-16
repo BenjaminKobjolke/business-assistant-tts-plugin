@@ -404,24 +404,40 @@ name = "business-assistant-calendar-plugin"
 version = "0.1.0"
 source = { editable = "../business-assistant-calendar-plugin" }
 dependencies = [
+    { name = "business-assistant-google-auth" },
     { name = "business-assistant-v2" },
-    { name = "google-api-python-client" },
-    { name = "google-auth" },
-    { name = "google-auth-httplib2" },
-    { name = "google-auth-oauthlib" },
     { name = "icalendar" },
     { name = "python-dateutil" },
 ]
 
 [package.metadata]
 requires-dist = [
+    { name = "business-assistant-google-auth", editable = "../business-assistant-google-auth" },
     { name = "business-assistant-v2", editable = "../business-assistant-v2" },
-    { name = "google-api-python-client", specifier = ">=2.100.0" },
-    { name = "google-auth", specifier = ">=2.23.0" },
-    { name = "google-auth-httplib2", specifier = ">=0.2.0" },
-    { name = "google-auth-oauthlib", specifier = ">=1.1.0" },
     { name = "icalendar", specifier = ">=5.0.0" },
     { name = "python-dateutil", specifier = ">=2.8.0" },
+]
+
+[package.metadata.requires-dev]
+dev = [
+    { name = "mypy", specifier = ">=1.0.0" },
+    { name = "pytest", specifier = ">=8.0.0" },
+    { name = "ruff", specifier = ">=0.4.0" },
+]
+
+[[package]]
+name = "business-assistant-contacts-plugin"
+version = "0.1.0"
+source = { editable = "../business-assistant-contacts-plugin" }
+dependencies = [
+    { name = "business-assistant-google-auth" },
+    { name = "business-assistant-v2" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "business-assistant-google-auth", editable = "../business-assistant-google-auth" },
+    { name = "business-assistant-v2", editable = "../business-assistant-v2" },
 ]
 
 [package.metadata.requires-dev]
@@ -441,6 +457,34 @@ dependencies = [
 
 [package.metadata]
 requires-dist = [{ name = "business-assistant-v2", editable = "../business-assistant-v2" }]
+
+[package.metadata.requires-dev]
+dev = [
+    { name = "mypy", specifier = ">=1.0.0" },
+    { name = "pytest", specifier = ">=8.0.0" },
+    { name = "ruff", specifier = ">=0.4.0" },
+]
+
+[[package]]
+name = "business-assistant-google-auth"
+version = "0.1.0"
+source = { editable = "../business-assistant-google-auth" }
+dependencies = [
+    { name = "business-assistant-v2" },
+    { name = "google-api-python-client" },
+    { name = "google-auth" },
+    { name = "google-auth-httplib2" },
+    { name = "google-auth-oauthlib" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "business-assistant-v2", editable = "../business-assistant-v2" },
+    { name = "google-api-python-client", specifier = ">=2.100.0" },
+    { name = "google-auth", specifier = ">=2.23.0" },
+    { name = "google-auth-httplib2", specifier = ">=0.2.0" },
+    { name = "google-auth-oauthlib", specifier = ">=1.1.0" },
+]
 
 [package.metadata.requires-dev]
 dev = [
@@ -612,6 +656,7 @@ source = { editable = "../business-assistant-v2" }
 dependencies = [
     { name = "bot-commander", extra = ["xmpp"] },
     { name = "business-assistant-calendar-plugin" },
+    { name = "business-assistant-contacts-plugin" },
     { name = "business-assistant-filesystem-plugin" },
     { name = "business-assistant-imap-plugin" },
     { name = "business-assistant-obsidian-plugin" },
@@ -633,6 +678,7 @@ dependencies = [
 requires-dist = [
     { name = "bot-commander", extras = ["xmpp"], editable = "../bot-commander" },
     { name = "business-assistant-calendar-plugin", editable = "../business-assistant-calendar-plugin" },
+    { name = "business-assistant-contacts-plugin", editable = "../business-assistant-contacts-plugin" },
     { name = "business-assistant-filesystem-plugin", editable = "../business-assistant-filesystem-plugin" },
     { name = "business-assistant-imap-plugin", editable = "../business-assistant-imap-plugin" },
     { name = "business-assistant-obsidian-plugin", editable = "../business-assistant-obsidian-plugin" },
