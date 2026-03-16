@@ -105,7 +105,7 @@ class TTSService:
         self._audio_users: set[str] = set()
         self._text_with_audio_users: set[str] = set()
         self._skip_once_users: set[str] = set()
-        self._text_messages: dict[str, str] = {}
+        self._text_messages: dict[str, list[str]] = {}
         self._splitter = self._load_splitter()
 
     @staticmethod
@@ -170,13 +170,12 @@ class TTSService:
         return False
 
     def queue_text_message(self, user_id: str, text: str) -> None:
-        """Queue a text message to be sent alongside the next audio response."""
-        existing = self._text_messages.get(user_id, "")
-        self._text_messages[user_id] = (existing + "\n\n" + text).strip()
+        """Queue a text message to be sent as a separate message alongside audio."""
+        self._text_messages.setdefault(user_id, []).append(text)
 
-    def consume_text_message(self, user_id: str) -> str | None:
-        """Retrieve and clear queued text message for a user."""
-        return self._text_messages.pop(user_id, None)
+    def consume_text_messages(self, user_id: str) -> list[str]:
+        """Retrieve and clear all queued text messages for a user."""
+        return self._text_messages.pop(user_id, [])
 
     @property
     def language_instruction(self) -> str:

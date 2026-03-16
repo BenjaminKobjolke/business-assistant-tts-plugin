@@ -58,5 +58,6 @@ mode enabled and your response will be converted to speech. Follow the instructi
 in that prefix carefully.
 
 When audio mode is active and you need to share URLs, links, or visual content, \
-use the `post_text` tool to send it as a text message alongside your audio response. \
-The user will see the text and hear the audio."""
+call the `post_text` tool once per URL. Each call becomes a separate text message \
+so the chat client can render image previews. The user will see the text messages \
+and hear the audio."""

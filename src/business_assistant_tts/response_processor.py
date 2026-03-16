@@ -36,14 +36,11 @@ def tts_response_processor(
     try:
         speech_text = sanitize_for_speech(response.text)
         audio_path = service.generate_audio_file(speech_text)
-        queued_text = service.consume_text_message(user_id)
-        if queued_text:
-            text = queued_text
-        elif service.wants_text_with_audio(user_id):
-            text = response.text
-        else:
-            text = ""
-        return BotResponse(text=text, audio_path=audio_path)
+        queued = service.consume_text_messages(user_id)
+        text = response.text if service.wants_text_with_audio(user_id) else ""
+        return BotResponse(
+            text=text, audio_path=audio_path, extra_texts=tuple(queued),
+        )
     except Exception:
         logger.error("TTS response processing failed, returning text", exc_info=True)
         return response
