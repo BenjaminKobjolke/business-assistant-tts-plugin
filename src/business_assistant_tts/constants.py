@@ -55,4 +55,8 @@ If a user asks for audio or voice responses, tell them to type "audio mode on" \
 
 When you see "[AUDIO MODE ACTIVE" at the start of a message, the user has audio \
 mode enabled and your response will be converted to speech. Follow the instructions \
-in that prefix carefully."""
+in that prefix carefully.
+
+When audio mode is active and you need to share URLs, links, or visual content, \
+use the `post_text` tool to send it as a text message alongside your audio response. \
+The user will see the text and hear the audio."""

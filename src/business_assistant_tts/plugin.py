@@ -1,11 +1,13 @@
-"""Plugin registration — TTS with command handler hooks (no AI tools)."""
+"""Plugin registration — TTS with command handler hooks and post_text tool."""
 
 from __future__ import annotations
 
 import logging
 
+from business_assistant.agent.deps import Deps
 from business_assistant.config.log_setup import add_plugin_logging
 from business_assistant.plugins.registry import PluginInfo, PluginRegistry
+from pydantic_ai import RunContext, Tool
 
 from .command_handler import tts_command_handler
 from .config import TTSSettings, load_tts_settings
@@ -38,6 +40,17 @@ def _create_provider(settings: TTSSettings) -> TTSProvider:
     raise ValueError(msg)
 
 
+def _post_text(ctx: RunContext[Deps], text: str) -> str:
+    """Post a text message to the user alongside the audio response.
+
+    Use this when you need to share URLs, links, images, or any content
+    the user needs to see or click while in audio mode.
+    """
+    service: TTSService = ctx.deps.plugin_data[PLUGIN_DATA_TTS_SERVICE]
+    service.queue_text_message(ctx.deps.user_id, text)
+    return "Text message queued — will be sent alongside your audio response."
+
+
 def register(registry: PluginRegistry) -> None:
     """Register the TTS plugin with the plugin registry."""
     add_plugin_logging(PLUGIN_NAME, "business_assistant_tts")
@@ -56,7 +69,8 @@ def register(registry: PluginRegistry) -> None:
         system_prompt_extra=SYSTEM_PROMPT_TTS,
     )
 
-    registry.register(info, [])
+    tools = [Tool(_post_text, name="post_text")]
+    registry.register(info, tools)
     registry.plugin_data[PLUGIN_DATA_TTS_SERVICE] = service
     registry.register_command_handler(tts_command_handler)
     registry.register_message_modifier(tts_message_modifier)
