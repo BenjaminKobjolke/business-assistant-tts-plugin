@@ -18,3 +18,4 @@ test_output.*
 .pytest_cache
 .ruff_cache
 .venv
+openapi.json
