@@ -32,6 +32,10 @@ def _create_provider(settings: TTSSettings) -> TTSProvider:
     """Create the TTS provider based on settings."""
     if settings.provider == "kitten":
         return KittenTTSProvider(settings.model)
+    if settings.provider == "kitten_api":
+        from .providers.kitten_api import KittenTTSAPIProvider
+
+        return KittenTTSAPIProvider(settings.api_url)
     if settings.provider == "qwen3":
         from .providers.qwen3 import Qwen3TTSProvider
 

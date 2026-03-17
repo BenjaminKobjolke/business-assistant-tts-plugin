@@ -16,7 +16,7 @@ from business_assistant_tts.tts_service import TTSService
 
 @pytest.fixture()
 def mock_provider() -> MagicMock:
-    provider = MagicMock()
+    provider = MagicMock(spec=["generate", "supported_languages"])
     provider.generate.return_value = (np.zeros(24000, dtype=np.float32), 24000)
     provider.supported_languages = ("en",)
     return provider
@@ -31,6 +31,8 @@ def service(mock_provider: MagicMock, tmp_path: str) -> TTSService:
         language="English",
         output_dir=str(tmp_path),
         speed=1.0,
+        api_url="http://localhost:8005",
+        output_format="opus",
     )
     return TTSService(mock_provider, settings)
 

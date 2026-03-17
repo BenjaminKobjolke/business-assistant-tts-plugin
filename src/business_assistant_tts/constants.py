@@ -20,6 +20,13 @@ DEFAULT_TTS_OUTPUT_DIR = "data/tts_output"
 DEFAULT_TTS_SPEED = 1.0
 DEFAULT_TTS_LANGUAGE = "English"
 
+# KittenTTS API defaults
+ENV_TTS_API_URL = "TTS_API_URL"
+ENV_TTS_OUTPUT_FORMAT = "TTS_OUTPUT_FORMAT"
+DEFAULT_TTS_API_URL = "http://localhost:8005"
+DEFAULT_TTS_OUTPUT_FORMAT = "opus"
+DEFAULT_KITTEN_API_VOICE = "expr-voice-5-m"
+
 # Qwen3 defaults
 DEFAULT_QWEN3_MODEL = "Qwen/Qwen3-TTS-12Hz-1.7B-CustomVoice"
 DEFAULT_QWEN3_VOICE = "Vivian"
@@ -58,6 +65,6 @@ mode enabled and your response will be converted to speech. Follow the instructi
 in that prefix carefully.
 
 When audio mode is active and you need to share URLs, links, or visual content, \
-call the `post_text` tool once per URL. Each call becomes a separate text message \
-so the chat client can render image previews. The user will see the text messages \
-and hear the audio."""
+call the `post_text` tool. URLs are automatically extracted and sent as separate \
+messages so the chat client can render image previews. The user will see the text \
+messages and hear the audio."""

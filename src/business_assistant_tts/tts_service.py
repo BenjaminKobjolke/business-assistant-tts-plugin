@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import gc
 import logging
+import re
 import uuid
 from pathlib import Path
 
@@ -27,6 +28,7 @@ from .providers.base import TTSProvider
 logger = logging.getLogger(__name__)
 
 MAX_CHUNK_CHARS = 150
+_RE_URL = re.compile(r"https?://\S+")
 
 
 def _convert_wav_to_ogg(wav_path: Path, ogg_path: Path) -> None:
@@ -170,8 +172,18 @@ class TTSService:
         return False
 
     def queue_text_message(self, user_id: str, text: str) -> None:
-        """Queue a text message to be sent as a separate message alongside audio."""
-        self._text_messages.setdefault(user_id, []).append(text)
+        """Queue a text message to be sent as a separate message alongside audio.
+
+        If the text contains URLs, each URL is extracted and queued as a
+        separate entry so the XMPP client can render image previews.
+        Non-URL text is discarded when URLs are present.
+        """
+        urls = _RE_URL.findall(text)
+        if urls:
+            for url in urls:
+                self._text_messages.setdefault(user_id, []).append(url)
+        else:
+            self._text_messages.setdefault(user_id, []).append(text)
 
     def consume_text_messages(self, user_id: str) -> list[str]:
         """Retrieve and clear all queued text messages for a user."""
@@ -208,7 +220,7 @@ class TTSService:
         return chunks
 
     def generate_audio_file(self, text: str) -> str:
-        """Generate an OGG audio file from text.
+        """Generate an audio file from text.
 
         Returns the path to the generated file.
 
@@ -218,10 +230,25 @@ class TTSService:
         output_dir = Path(self._settings.output_dir).resolve()
         output_dir.mkdir(parents=True, exist_ok=True)
         file_id = uuid.uuid4().hex[:8]
-        ogg_path = output_dir / f"tts_{file_id}.ogg"
-        wav_path = output_dir / f"tts_{file_id}.wav"
 
         try:
+            # Direct bytes path — API providers that return complete audio
+            if hasattr(self._provider, "generate_audio_bytes"):
+                ext = self._settings.output_format
+                out_path = output_dir / f"tts_{file_id}.{ext}"
+                audio_bytes = self._provider.generate_audio_bytes(
+                    text,
+                    self._settings.voice,
+                    self._settings.speed,
+                    self._settings.output_format,
+                )
+                out_path.write_bytes(audio_bytes)
+                logger.info(LOG_AUDIO_GENERATED, out_path, len(audio_bytes))
+                return str(out_path)
+
+            # Numpy array path — local providers (kitten, qwen3)
+            ogg_path = output_dir / f"tts_{file_id}.ogg"
+            wav_path = output_dir / f"tts_{file_id}.wav"
             sentences = self._split_text(text)
             chunks = []
             sample_rate = 0

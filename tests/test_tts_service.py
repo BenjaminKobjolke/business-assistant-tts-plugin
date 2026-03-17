@@ -29,12 +29,14 @@ def settings() -> TTSSettings:
         output_dir="",
         speed=1.0,
         language="English",
+        api_url="http://localhost:8005",
+        output_format="opus",
     )
 
 
 @pytest.fixture()
 def mock_provider() -> MagicMock:
-    provider = MagicMock()
+    provider = MagicMock(spec=["generate", "supported_languages"])
     provider.generate.return_value = (np.zeros(24000, dtype=np.float32), 24000)
     provider.supported_languages = ("en",)
     return provider
@@ -49,6 +51,8 @@ def service(mock_provider: MagicMock, settings: TTSSettings, tmp_path: str) -> T
         output_dir=str(tmp_path),
         speed=settings.speed,
         language=settings.language,
+        api_url=settings.api_url,
+        output_format=settings.output_format,
     )
     return TTSService(mock_provider, s)
 
